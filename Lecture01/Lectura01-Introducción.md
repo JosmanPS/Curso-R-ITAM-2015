@@ -1,0 +1,243 @@
+Introducción
+========================================================
+author: José Manuel Proudinat Silva
+font-import: http://fonts.googleapis.com/css?family=Risque
+font-family: 'Risque'
+jmps2812@gmail.com
+
+GitHub: JosmanPS
+
+www.datata.mx
+
+
+Algunas cosas generales
+=======================
+type: sub-section
+
+
+¡Hola mundo!
+==========================
+- Hola, soy José Manuel Proudinat
+- Pero mejor llámenme *Josman*
+- Estudio matemáticas aplicadas ( ya casi acabo :)  )
+- Asistente de investigación (Algorithmic economics) - Dr. Kensuke Teshima
+- Pero lo más divertido... CAO en Datata
+
+![Datata](images/datata.png)
+
+
+Temas del curso
+==============================
+- Instalación de R y RStudio (IDE)
+- Instalar paquetes
+- Datos, datos, datos
+- Leer datos
+- Comandos básicos del lenguaje
+- Estructuración y limpieza de datos
+- Visualización de datos
+- Introducción a modelos estadísticos
+- Introducción a machine learning
+
+**Geeks just wanna have fun!**
+
+
+Consejos de vida
+==================================
+- Usen software libre
+- i.e. Diganle no a Stata
+- También abandonen Windows
+- Exploren muchos lenguajes
+- Lean blogs
+- Hagan una cuenta en www.github.com
+- Sigan a **@josmanps** en github
+- Sigan al mismo usuario en twitter
+- **Be hackers!**
+
+
+Instalación
+=======================
+type: sub-section
+
+
+Instalación
+========================================================
+  
+Instalando R (Windows y OS X):
+  
+- Abrimos <http://www.r-project.org/> en el explorador.
+- Hacemos click en CRAN.
+- Seleccionamos el "mirror" del ITAM.
+- Seleccionamos nuestro sistema operativo y descargamos el instalador.
+- Seguimos las instrucciones del instalador.
+
+
+Instalando en Linux
+======================
+
+Si usas Linux, probablemente ya sabes que hacer ;)
+
+Por cualquier cosa, aquí está cómo hacerlo para algunas distros:
+
+```
+# Debian / Ubuntu
+sudo apt-get install r-base r-base-dev
+
+# Red Hat / Fedora / Cent OS
+sudo yum install R
+
+# Arch
+sudo pacman install R
+```
+
+
+Instalando RStudio
+========================================================
+RStudio es el IDE que usaremos para el curso (aunque no es necesario, es cómodo).
+
+Instalación:
+  
+- Abrimos <http://www.rstudio.com/> en el explorador.
+- Hacemos click en Products -> RStudio.
+- Bajamos y hacemos click en "Download RStudio Desktop".
+- Descargamos el instalador indicado para nuestro sistema operativo.
+- Seguimos las instrucciones del instalador.
+
+
+RStudio en Linux
+=============================
+Para instalarlo:
+
+- Puedes seguir las indicaciones de la diapositiva pasada y usar los archivos rpm o según sea tu distribución.
+- Pero mejor crea un repo y descárgalo con tu manejador de paquetes, así lo mantendrás actualizado.
+
+
+Instalación de paquetes
+=============================
+type: sub-section
+
+
+Instalando paquetes
+========================================================
+  R se maneja a través de paquetes, los cuales son conjuntos de funciones específicas. Por ejemplo, instalaremos el paquete ggplot2, el cual contiene muchas funciones que nos servirán para hacer gráficas muy atractivas visualmente. Para ello, usaremos la función `install.packages()`.
+
+
+```r
+install.packages("dplyr")
+```
+
+
+Pidiendo Ayuda de funciones
+========================================================
+  - Primero, si queremos buscar la ayuda más general de R, desde manuales introductorios, hasta los vignettes de todos nuestros paquetes usaremos la función `help.start()`.
+- Para pedir ayuda sobre una función específica tenemos 3 funciones que nos serán muy útiles. Para ver un ejemplo, buscaremos ayuda de la función `mean()`, la cual sirve para calcular medias en R.
+
+
+```r
+# Ayuda en general sobre la función.
+help(mean)
+```
+
+========================
+
+```r
+?mean    # Usar ? es equivalente a help()
+
+# Ayuda sobre los argumentos de la función.
+args(mean)
+```
+
+```
+function (x, ...) 
+NULL
+```
+
+=============================
+  
+  ```r
+  # Un ejemplo de como usar la función.
+  example(mean)
+  ```
+  
+  ```
+  
+  mean> x <- c(0:10, 50)
+  
+  mean> xm <- mean(x)
+  
+  mean> c(xm, mean(x, trim = 0.10))
+  [1] 8.75 5.50
+  ```
+
+Pidiendo ayuda con "keyword"
+=====================
+  Cuando no estemos seguros del nombre de una función podemos usar palabras clave para buscar lo que necestiamos. Para eso usamos la función `help.search()`.
+
+```r
+# Ejemplo: Queremos buscar funciones sobre la distribución normal
+help.search("normal")
+
+# Equivalentemente, podemos usar ??
+??normal
+```
+
+Pidiendo ayuda sobre un paquete
+=============
+  Cuando necesitamos saber lo que contiene un paquete y como utilizarlo usaremos la función `help(package="")'.
+
+```r
+# Buscaremos ayuda del paquete que instalamos anteriormente
+help(package = "ggplot2")
+```
+
+=======
+Algunos paquetes incluyen "vignettes" que son documentos como introducciones, tutoriales o referencias. Para verlos usamos las siguientes funciones:
+
+
+```r
+# Para ver la lista completa de vignettes
+vignette()
+
+# Vignettes de un paquete en específico (ej:)
+vignette(package = "markdown")
+
+# Cargamos un vignette en específico
+vignette("markdown-examples")
+```
+
+Ayuda en la Web
+===================
+
+```r
+# Buscando en la red de R
+RSiteSearch("bayes")
+```
+
+Actualmente, existen muchos sitios en internet, además de los oficiales de R, que son de gran utilidad para los usuarios. Mencionamos los más importantes:
+- http://rseek.org/
+Buscador de google enfocado en R.
+- http://stackoverflow.com/
+Sitio de Q&A enfocado en problemas de programación.
+- http://stats.stackexchange.com/
+Sitio de Q&A enfocado en problemas de estadística.
+
+Buscando paquetes y funciones en R
+=================
+Existen miles de paquetes en R y puede que no estés seguro de cuál es el que necesitas para determinada tarea.
+Busca en las siguientes direcciones:
+- http://cran.r-project.org/web/views/
+Buscador por temas.
+- http://crantastic.org/
+Página donde podrás encontrar los paquetes más relevantes.
+- http://rseek.org/
+Para buscar funciones, usa una palabra clave y da click en la opción "Functions".
+
+Buscando en las "Mailing Lsits"
+==========
+A través de las Mailing Lists de R podemos hacer preguntas directamente a los desarrolladores del paquete estadístico. Para buscar una pregunta:
+- Entramos a http://rseek.org/, buscamos lo que deseamos, y damos click en la opción "support lists".
+
+Para hacer una pregunta:
+- Entramos a https://stat.ethz.ch/mailman/listinfo/r-help/
+- Nos suscribimos.
+- Leemos la guía para hacer posts.
+- Mandamos nuestra pregunta a r-help@r-project.org.
