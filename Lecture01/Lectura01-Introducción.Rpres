@@ -10,6 +10,13 @@ GitHub: JosmanPS
 www.datata.mx
 
 
+Patrocinado por...
+====================
+<img src="images/datata.png" alt="Drawing" style="width: 400px;"/>
+<img src="images/altereco.00_png_srz" alt="Drawing" style="width: 400px;"/>
+
+
+
 Algunas cosas generales
 =======================
 type: sub-section
@@ -22,8 +29,6 @@ type: sub-section
 - Estudio matemáticas aplicadas ( ya casi acabo :)  )
 - Asistente de investigación (Algorithmic economics) - Dr. Kensuke Teshima
 - Pero lo más divertido... CAO en Datata
-
-![Datata](images/datata.png)
 
 
 Temas del curso
