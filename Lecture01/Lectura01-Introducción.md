@@ -44,7 +44,7 @@ Temas del curso
 Consejos de vida
 ==================================
 - Usen software libre
-- i.e. Diganle no a Stata
+- i.e. Díganle no a Stata
 - También abandonen Windows
 - Exploren muchos lenguajes
 - Lean blogs
@@ -124,6 +124,11 @@ Instalando paquetes
 ```r
 install.packages("dplyr")
 ```
+
+
+Ayuda :'(
+=======================
+type: sub-section
 
 
 Pidiendo Ayuda de funciones
