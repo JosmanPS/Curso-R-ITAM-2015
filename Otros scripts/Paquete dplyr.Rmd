@@ -1,0 +1,220 @@
+---
+title: "Manipulación de datos - dplyr"
+author: "Josman"
+date: "10 de octubre de 2014"
+output: pdf_document
+---
+
+El paquete dplyr es una gran herramienta para la exploración y manipulación de datos. Cuenta con 5 principales funciones:
+
+- filter()
+- select()
+- arrange()
+- mutate()
+- summarise()
+- extra: group_by()
+
+Para explorar las funciones de dplyr cargaremos una base de datos grande (21 variables, 227496 observaciones).
+
+```{r}
+# Cargamos paquetes
+suppressMessages(library(dplyr))
+library(hflights)
+
+# Exploramos datos
+data(hflights)
+head(hflights)
+```
+
+Convertimos los datos en un local data frame. Esto hace que nuestros datos se impriman de manera más amigable.
+```{r}
+# Convertimos en un data frame local
+flights <- tbl_df(hflights)
+
+# Imprime únicamente los renglones que se ajustan a tu pantalla
+flights
+
+# Podemos espicificar que queremos ver más renglones
+print(flights, n=20)
+
+# Convertimos en un data frame 'normal'
+data.frame(head(flights))
+```
+
+filter
+===========
+
+Indicamos un criterio para seleccionar renglones:
+
+```{r, eval=FALSE}
+# Modo tradicional para ver todos los vuelos de January 1
+flights[flights$Month==1 & flights$DayofMonth==1, ]
+```
+```{r}
+# Modo dplyr 
+# note: podemos usar coma o ampersand para representar AND
+filter(flights, Month==1, DayofMonth==1)
+
+# Usamos 'pipe' para OR 
+filter(flights, UniqueCarrier=="AA" | UniqueCarrier=="UA")
+
+# También podemos usar el operador %in% para seleccionar distintos criterios
+filter(flights, UniqueCarrier %in% c("AA", "UA"))
+```
+
+select
+===========
+
+Seleccionamos columnas por su nombre:
+
+```{r,eval=FALSE}
+# Modo tradicional para seleccionar las columnas DepTime, ArrTime, y FlightNum 
+flights[, c("DepTime", "ArrTime", "FlightNum")]
+```
+```{r}
+# modo dplyr
+select(flights, DepTime, ArrTime, FlightNum)
+
+# Usamos ':' para seleccionar múltiples columnas continuas, y 'contains' para buscar columnas que coincidan con el nombre indicado
+# nota: `starts_with`, `ends_with`, y `matches` también puede ser usado para buscar columnas coincidentes
+select(flights, Year:DayofMonth, contains("Taxi"), contains("Delay"))
+```
+
+Encadenando
+============
+
+Normalmente cuando aplicamos una secuencia de funciones a los datos vamos anidandolas una dentro de otra, lo cual puede ser muy confuso y sucio para el lector. Con este paquete podremos aplicar una secuencia de funciones 'encadenándolas':
+
+```{r,eval=FALSE}
+# Modo anidado para seleecionar las columnas UniqueCarrier y DepDelay y filtrarlas para delays mayores a 60 minutos
+filter(select(flights, UniqueCarrier, DepDelay), DepDelay > 60)
+```
+```{r}
+# Modo encadenado
+flights %>%
+    select(UniqueCarrier, DepDelay) %>%
+    filter(DepDelay > 60)
+```
+
+arrange
+==================
+
+Reordenar renglones:
+
+```{r, eval=FALSE}
+# Modo tradicional para seleccionar las columnas UniqueCarrier y DepDelay y ornenarlas según el DepDelay
+flights[order(flights$DepDelay), c("UniqueCarrier", "DepDelay")]
+```
+
+```{r}
+# Modo dplyr + encadenado
+flights %>%
+    select(UniqueCarrier, DepDelay) %>%
+    arrange(DepDelay)
+```
+
+```{r}
+# Usamos `desc` para orden descendiente
+flights %>%
+    select(UniqueCarrier, DepDelay) %>%
+    arrange(desc(DepDelay))
+```
+
+mutate
+===========
+
+Agrega nuevas variables, las cuales son funciones de las variables ya existentes:
+
+```{r, eval=FALSE}
+# Modo tradicional para crear la variable Speed
+flights$Speed <- flights$Distance / flights$AirTime*60
+flights[, c("Distance", "AirTime", "Speed")]
+```
+
+```{r}
+# Modo dplyr
+flights %>%
+    select(Distance, AirTime) %>%
+    mutate(Speed = Distance/AirTime*60)
+
+# Guardamos la nueva variable
+flights <- flights %>% mutate(Speed = Distance/AirTime*60)
+
+```
+
+
+summarise
+========
+
+Reducir variables a valores. Muy útil cuando los datos están agrupados por una o más variables. Con `group_by` crearemos grupos para dividir los datos, `summarise` nos permitirá presentar los datos.
+
+```{r}
+# Modo tradicional para calcular el promedio de 'delay' en cada destino
+head(with(flights, tapply(ArrDelay, Dest, mean, na.rm=TRUE)))
+head(aggregate(ArrDelay ~ Dest, flights, mean))
+```
+
+```{r}
+# Modo dplyr
+flights %>%
+    group_by(Dest) %>%
+    summarise(avg_delay = mean(ArrDelay, na.rm=TRUE))
+```
+
+```{r}
+# Para cada corrida calculamos el porcentaje de vuelos cancelados o desviados
+flights %>%
+    group_by(UniqueCarrier) %>%
+    summarise_each(funs(mean), Cancelled, Diverted)
+
+# Para cada corrida calculamos el minimo y máximo de los retrasos
+flights %>%
+    group_by(UniqueCarrier) %>%
+    summarise_each(funs(min(., na.rm=TRUE), max(., na.rm=TRUE)), matches("Delay"))
+```
+
+
+```{r}
+# Para cada día contamos el número de vuelos y los ordenamos
+flights %>%
+    group_by(Month, DayofMonth) %>%
+    summarise(flight_count = n()) %>%
+    arrange(desc(flight_count))
+
+# Otra forma más sencilla de escribirlo con la función 'tally'
+flights %>%
+    group_by(Month, DayofMonth) %>%
+    tally(sort = TRUE)
+
+# Para cada destino contamos el núero de vuelos y número de aviones
+flights %>%
+    group_by(Dest) %>%
+    summarise(flight_count = n(), plane_count = n_distinct(TailNum))
+```
+
+```{r}
+# Para cada destino mostramos el número de vuelos cancelados y no cancelados
+flights %>%
+    group_by(Dest) %>%
+    select(Cancelled) %>%
+    table() %>%
+    head()
+```
+
+
+Otras funciones muy útiles
+==============
+
+```{r}
+# Obtener una muestra aleatoria de los datos por número de datos
+flights %>% sample_n(5)
+
+# Muestra según una proporción del tamaño de los datos
+flights %>% sample_frac(0.25, replace=TRUE)
+
+# Modo tradicional para ver la estructura de un objeto
+str(flights)
+
+# Modo dplyr: mejor formato y se adapta a tu pantalla
+glimpse(flights)
+```
